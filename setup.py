@@ -8,7 +8,7 @@ dependencies = [
 
 setup(
     name='gimages',
-    description='upload files to your github enterprise server.',
+    description='Upload images to your github enterprise server.',
     keywords='gimages',
     version='1.0',
     entry_points = {'console_scripts': ['gimage=gimage.gimage:main']},
@@ -16,7 +16,7 @@ setup(
     author='samstav',
     author_email='smlstvnh@gmail.com',
     install_requires=dependencies,
-    license='GNU GPL',
+    license='Apache 2',
     classifiers=["Programming Language :: Python"],
     url='https://github.com/smlstvnh/gimage'
 )
