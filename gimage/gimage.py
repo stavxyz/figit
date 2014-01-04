@@ -11,12 +11,13 @@ import argh
 import requests
 
 from argh.decorators import arg
+from bs4 import BeautifulSoup
 
 logger = logging.getLogger(__name__)
 
-from .header import XCSRFTOKEN, COOKIE
+from .header import COOKIE
 try:
-    from .header_no_commit import XCSRFTOKEN, COOKIE
+    from .header_no_commit import COOKIE
 except ImportError as err:
     logger.exception(err)
     print(err)
@@ -41,9 +42,17 @@ def push(args):
         filesize = os.path.getsize(filepath)
 
     base_url = "https://github.{}.com".format(args.suffix)
+
+    # We'll get the X-CSRF-Token using the cookie
+    r = requests.get(base_url, headers={"Cookie":COOKIE})
+    r.raise_for_status()
+
+    soup = BeautifulSoup(r.content)
+    x_csrf_token = soup.find(attrs={"name":"csrf-token"}).get('content')
+
     policies = base_url + "/upload/policies/assets"
     headers = {
-    "X-CSRF-Token": XCSRFTOKEN,
+    "X-CSRF-Token": x_csrf_token,
     "Cookie": COOKIE
     }
     data = {"name": filename,
