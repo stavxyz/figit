@@ -38,6 +38,6 @@ gimage ~/Desktop/ascreenshot.png
 
   go to:
 
-  https://github.startshipenterprise.com/github-enterprise-assets/0000/1484/0000/0276/2f4e73b4-750f-11e3-8d96-4f8f79feadd8.png
+  https://github.starshipenterprise.com/github-enterprise-assets/0000/1484/0000/0276/2f4e73b4-750f-11e3-8d96-4f8f79feadd8.png
 
 ```
