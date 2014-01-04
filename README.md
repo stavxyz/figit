@@ -13,7 +13,7 @@ gimage ~/Desktop/ascreenshot.png
   https://github.starshipenterprise.com/github-enterprise-assets/0000/1484/0000/0276/2f4e73b4-750f-11e3-8d96-4f8f79feadd8.png
 ```
 
-#### Install
+#### Installation
 
 Quick and dirty mode:
 
@@ -30,7 +30,13 @@ cd gimage
 pip install -e .
 ```
 
-#### Use
+#### Configuration
+
+Get the cookie named `_fi_sess` using your the javascript console of your favorite modern browser.
+
+Drop it in `cookie.txt`. It should start with `_fi_sess` have some dashy bits `--` and end in a semi-colon.
+
+#### Usage
 ```bash
 gimage ~/Desktop/ascreenshot.png
 
