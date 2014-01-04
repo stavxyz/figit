@@ -1,22 +1,26 @@
 import json
-from mimetypes import guess_type
+import logging
 import os
-import sys
 import platform
+import sys
+
+from mimetypes import guess_type
 from subprocess import Popen, PIPE
 
 import argh
-from argh.decorators import arg
 import requests
 
-from header import XCSRFTOKEN, COOKIE
-try:
-    from header_no_commit import XCSRFTOKEN, COOKIE
-except ImportError as err:
-    print err
-    print "Use header.py as a template for header_no_commit.py"
-    pass
+from argh.decorators import arg
 
+logger = logging.getLogger(__name__)
+
+from .header import XCSRFTOKEN, COOKIE
+try:
+    from .header_no_commit import XCSRFTOKEN, COOKIE
+except ImportError as err:
+    logger.exception(err)
+    print(err)
+    print("Use header.py as a template for header_no_commit.py")
 
 def good_filepath(filepath):
     filepath = os.path.expanduser(filepath)
@@ -47,10 +51,7 @@ def push(args):
             "content_type": content_type}
 
     r = requests.post(policies, data=data, headers=headers)
-    if r.ok:
-        pass
-    else:
-        sys.exit("request failed: " + str(r) + " " + r.reason)
+    r.raise_for_status()
 
     rjson = r.json()
     upload_url = base_url + rjson['upload_url']
@@ -68,14 +69,13 @@ def push(args):
              'file': (filename, open(filepath, 'rb'), content_type)}
 
     r = requests.post(upload_url, headers=headers, files=files)
-    if r.ok:
-        if 'Darwin' in platform.platform():
-            p1 = Popen(['echo', '-n', image_url], stdout=PIPE)
-            Popen(['pbcopy'], stdin=p1.stdout, stdout=PIPE)
-            print "\n  ++ url copied to clipboard ++"
-        print "\n  go to:\n\n  " + image_url + "\n"
-    else:
-        sys.exit("request failed: " + str(r) + " " + r.reason)
+    r.raise_for_status()
+
+    if 'Darwin' in platform.platform():
+        p1 = Popen(['echo', '-n', image_url], stdout=PIPE)
+        Popen(['pbcopy'], stdin=p1.stdout, stdout=PIPE)
+        print "\n  ++ url copied to clipboard ++"
+    print "\n  go to:\n\n  " + image_url + "\n"
 
 
 def main():
