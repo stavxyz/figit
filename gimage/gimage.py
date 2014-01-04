@@ -15,14 +15,6 @@ from bs4 import BeautifulSoup
 
 logger = logging.getLogger(__name__)
 
-from .header import COOKIE
-try:
-    from .header_no_commit import COOKIE
-except ImportError as err:
-    logger.exception(err)
-    print(err)
-    print("Use header.py as a template for header_no_commit.py")
-
 def good_filepath(filepath):
     filepath = os.path.expanduser(filepath)
     filepath = os.path.abspath(filepath)
@@ -32,6 +24,15 @@ def good_filepath(filepath):
 @arg('-s', '--suffix', default='rackspace',
      help='enterprise GitHub suffix, viz. github.<suffix>.com')
 def push(args):
+
+    cookie=None
+    # Arbitrary cookie file name
+    with open("cookie.txt") as cookie_file:
+        cookie = cookie_file.read().strip()
+
+    if(not cookie):
+        raise Exception("cookie.txt could not be read")
+
 
     isfile, filepath = good_filepath(args.path[0])
     if not isfile:
@@ -44,22 +45,22 @@ def push(args):
     base_url = "https://github.{}.com".format(args.suffix)
 
     # We'll get the X-CSRF-Token using the cookie
-    r = requests.get(base_url, headers={"Cookie":COOKIE})
+    r = requests.get(base_url, headers={"Cookie":cookie})
     r.raise_for_status()
 
     soup = BeautifulSoup(r.content)
     x_csrf_token = soup.find(attrs={"name":"csrf-token"}).get('content')
 
-    policies = base_url + "/upload/policies/assets"
-    headers = {
-    "X-CSRF-Token": x_csrf_token,
-    "Cookie": COOKIE
-    }
+    policy_url = base_url + "/upload/policies/assets"
+
+    headers = {"X-CSRF-Token": x_csrf_token,
+               "Cookie": cookie}
+
     data = {"name": filename,
             "size": filesize,
             "content_type": content_type}
 
-    r = requests.post(policies, data=data, headers=headers)
+    r = requests.post(policy_url, data=data, headers=headers)
     r.raise_for_status()
 
     rjson = r.json()
