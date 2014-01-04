@@ -1,0 +1,6 @@
+header_no_commit.py
+*.pyc
+
+#dist stuff
+*.egg-info
+dist
