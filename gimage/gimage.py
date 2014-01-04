@@ -1,22 +1,19 @@
 import json
-from mimetypes import guess_type
+import logging
 import os
-import sys
 import platform
+import sys
+
+from mimetypes import guess_type
 from subprocess import Popen, PIPE
 
 import argh
-from argh.decorators import arg
 import requests
 
-from header import XCSRFTOKEN, COOKIE
-try:
-    from header_no_commit import XCSRFTOKEN, COOKIE
-except ImportError as err:
-    print err
-    print "Use header.py as a template for header_no_commit.py"
-    pass
+from argh.decorators import arg
+from bs4 import BeautifulSoup
 
+logger = logging.getLogger(__name__)
 
 def good_filepath(filepath):
     filepath = os.path.expanduser(filepath)
@@ -28,6 +25,15 @@ def good_filepath(filepath):
      help='enterprise GitHub suffix, viz. github.<suffix>.com')
 def push(args):
 
+    cookie=None
+    # Arbitrary cookie file name
+    with open("cookie.txt") as cookie_file:
+        cookie = cookie_file.read().strip()
+
+    if(not cookie):
+        raise Exception("cookie.txt could not be read")
+
+
     isfile, filepath = good_filepath(args.path[0])
     if not isfile:
         raise IOError("No such file or directory: %s" % filepath)
@@ -37,20 +43,25 @@ def push(args):
         filesize = os.path.getsize(filepath)
 
     base_url = "https://github.{}.com".format(args.suffix)
-    policies = base_url + "/upload/policies/assets"
-    headers = {
-    "X-CSRF-Token": XCSRFTOKEN,
-    "Cookie": COOKIE
-    }
+
+    # We'll get the X-CSRF-Token using the cookie
+    r = requests.get(base_url, headers={"Cookie":cookie})
+    r.raise_for_status()
+
+    soup = BeautifulSoup(r.content)
+    x_csrf_token = soup.find(attrs={"name":"csrf-token"}).get('content')
+
+    policy_url = base_url + "/upload/policies/assets"
+
+    headers = {"X-CSRF-Token": x_csrf_token,
+               "Cookie": cookie}
+
     data = {"name": filename,
             "size": filesize,
             "content_type": content_type}
 
-    r = requests.post(policies, data=data, headers=headers)
-    if r.ok:
-        pass
-    else:
-        sys.exit("request failed: " + str(r) + " " + r.reason)
+    r = requests.post(policy_url, data=data, headers=headers)
+    r.raise_for_status()
 
     rjson = r.json()
     upload_url = base_url + rjson['upload_url']
@@ -68,14 +79,13 @@ def push(args):
              'file': (filename, open(filepath, 'rb'), content_type)}
 
     r = requests.post(upload_url, headers=headers, files=files)
-    if r.ok:
-        if 'Darwin' in platform.platform():
-            p1 = Popen(['echo', '-n', image_url], stdout=PIPE)
-            Popen(['pbcopy'], stdin=p1.stdout, stdout=PIPE)
-            print "\n  ++ url copied to clipboard ++"
-        print "\n  go to:\n\n  " + image_url + "\n"
-    else:
-        sys.exit("request failed: " + str(r) + " " + r.reason)
+    r.raise_for_status()
+
+    if 'Darwin' in platform.platform():
+        p1 = Popen(['echo', '-n', image_url], stdout=PIPE)
+        Popen(['pbcopy'], stdin=p1.stdout, stdout=PIPE)
+        print "\n  ++ url copied to clipboard ++"
+    print "\n  go to:\n\n  " + image_url + "\n"
 
 
 def main():
