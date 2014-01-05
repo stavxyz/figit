@@ -1,7 +1,9 @@
 gimages
 =======
 
-Upload images to your GitHub Enterprise account.
+Upload images to your GitHub Enterprise account!
+
+:camera: for your :octocat:
 
 ```
 gimage ~/Desktop/ascreenshot.png
@@ -32,9 +34,9 @@ pip install -e .
 
 #### Configuration
 
-Get the cookie named `_fi_sess` using your the javascript console of your favorite modern browser.
+Get the cookie named `_fi_sess` using the javascript console of your favorite modern browser.
 
-Drop it in `cookie.txt`. It should start with `_fi_sess` have some dashy bits `--` and end in a semi-colon.
+Drop it in `cookie.txt`. It should start with `_fi_sess`, have some dashy bits `--`, and end in a semi-colon.
 
 #### Usage
 ```bash
