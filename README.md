@@ -1,4 +1,4 @@
-gimages
+images
 =======
 
 Upload images to your GitHub Enterprise account!
@@ -6,7 +6,7 @@ Upload images to your GitHub Enterprise account!
 :camera: for your :octocat:
 
 ```
-gimage ~/Desktop/ascreenshot.png
+figit ~/Desktop/ascreenshot.png
 
   ++ url copied to clipboard ++
 
@@ -20,7 +20,7 @@ gimage ~/Desktop/ascreenshot.png
 Quick and dirty mode:
 
 ```bash
-pip install git+https://github.com/smlstvnh/gimages.git#egg=gimages
+pip install git+https://github.com/smlstvnh/figit.git#egg=figit
 ```
 
 Development:
@@ -28,7 +28,7 @@ Development:
 Clone, fork, or whatever you do.
 
 ```bash
-cd gimage
+cd figit
 pip install -e .
 ```
 
@@ -40,7 +40,7 @@ Drop it in `cookie.txt`. It should start with `_fi_sess`, have some dashy bits `
 
 #### Usage
 ```bash
-gimage ~/Desktop/ascreenshot.png
+figit ~/Desktop/ascreenshot.png
 
   ++ url copied to clipboard ++
 
