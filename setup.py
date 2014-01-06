@@ -8,16 +8,16 @@ dependencies = [
     ]
 
 setup(
-    name='gimages',
+    name='figit',
     description='Upload images to your github enterprise server.',
-    keywords='gimages',
+    keywords='figit',
     version='1.0',
-    entry_points = {'console_scripts': ['gimage=gimage.gimage:main']},
+    entry_points = {'console_scripts': ['figit=figit.figit:main']},
     packages = find_packages(exclude=['tests']),
     author='samstav',
     author_email='smlstvnh@gmail.com',
     install_requires=dependencies,
     license='Apache 2',
     classifiers=["Programming Language :: Python"],
-    url='https://github.com/smlstvnh/gimage'
+    url='https://github.com/smlstvnh/figit'
 )
