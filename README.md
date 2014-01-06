@@ -5,7 +5,7 @@ Upload images to your GitHub Enterprise account!
 
 :camera: for your :octocat:
 
-```
+```bash
 $ figit ~/Desktop/ascreenshot.png
 
   ++ url copied to clipboard ++
