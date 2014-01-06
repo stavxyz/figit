@@ -4,7 +4,8 @@ dependencies = [
     'argcomplete>=0.6.3',
     'argh>=0.23.3',
     'requests>=2.1.0',
-    'beautifulsoup4==4.3.2'
+    'beautifulsoup4>=4.3.2',
+    'xerox>=0.3.1'
     ]
 
 setup(

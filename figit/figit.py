@@ -9,6 +9,7 @@ from subprocess import Popen, PIPE
 
 import argh
 import requests
+import xerox
 
 from argh.decorators import arg
 from bs4 import BeautifulSoup
@@ -143,12 +144,14 @@ def push(args):
         logger.debug("Uploading file | Reason: %s", r.reason)
     r.raise_for_status()
 
-    if 'Darwin' in platform.platform():
-        p1 = Popen(['echo', '-n', image_url], stdout=PIPE)
-        Popen(['pbcopy'], stdin=p1.stdout, stdout=PIPE)
-        print "\n  ++ url copied to clipboard ++"
-    print "\n  go to:\n\n  " + image_url + "\n"
 
+    try:
+        xerox.copy(image_url)
+        print("Clipboard success!")
+        print("{} copied to clipboard".format(image_url))
+    except Exception as e:
+        print("Unable to copy to clipboard.")
+        print("Image at {}".format(image_url))
 
 def main():
 
