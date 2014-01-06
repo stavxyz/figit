@@ -1,4 +1,4 @@
-images
+figit
 =======
 
 Upload images to your GitHub Enterprise account!
