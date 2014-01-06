@@ -6,7 +6,7 @@ Upload images to your GitHub Enterprise account!
 :camera: for your :octocat:
 
 ```
-figit ~/Desktop/ascreenshot.png
+$ figit ~/Desktop/ascreenshot.png
 
   ++ url copied to clipboard ++
 
@@ -20,7 +20,7 @@ figit ~/Desktop/ascreenshot.png
 Quick and dirty mode:
 
 ```bash
-pip install figit
+$ pip install figit
 ```
 
 Development:
@@ -28,8 +28,8 @@ Development:
 Clone, fork, or whatever you do.
 
 ```bash
-cd figit
-pip install -e .
+$ cd figit
+$ pip install -e .
 ```
 
 #### Configuration
@@ -40,7 +40,7 @@ Drop it in `cookie.txt`. It should start with `_fi_sess`, have some dashy bits `
 
 #### Usage
 ```bash
-figit ~/Desktop/ascreenshot.png
+$ figit ~/Desktop/ascreenshot.png
 
   ++ url copied to clipboard ++
 
