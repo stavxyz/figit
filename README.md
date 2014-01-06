@@ -20,7 +20,7 @@ figit ~/Desktop/ascreenshot.png
 Quick and dirty mode:
 
 ```bash
-pip install git+https://github.com/smlstvnh/figit.git#egg=figit
+pip install figit
 ```
 
 Development:
