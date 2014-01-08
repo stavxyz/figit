@@ -1,4 +1,5 @@
 import json
+import getpass
 import logging
 import os
 import platform
@@ -58,19 +59,48 @@ def push(args):
 
     base_url = "https://{}".format(args.github)
 
-    # We'll get the X-CSRF-Token using the cookie
-    headers = {"Cookie": cookie}
-    logger.debug("Fetching X-CSRF-Token | URL: %s", base_url)
-    logger.debug("Fetching X-CSRF-Token | Headers: %s", headers)
-    r = requests.get(base_url, headers=headers)
-    if not r.ok:
-        logger.debug("Fetching X-CSRF-Token | Status Code: %s", r.status_code)
-        logger.debug("Fetching X-CSRF-Token | Reason: %s", r.reason)
-    r.raise_for_status()
+    cookie = keyring.get_password('figit', 'cookie')
+    x_csrf_token = keyring.get_password('figit', 'x_csrf_token')
 
-    soup = BeautifulSoup(r.content)
-    x_csrf_token = soup.find(attrs={"name":"csrf-token"}).get('content')
-    logger.debug("X-CSRF-Token: %s", x_csrf_token)
+    if not cookie or not x_csrf_token:
+        logger.debug("Cookie or X-CSRF-Token not found in keyring... fetching those.")
+
+        # get session cookie and csrf token
+        login_url = base_url + "/login"
+        r = requests.get(login_url)
+        if not r.ok:
+            logger.debug("GET %s | Status Code: %s", login_url, r.status_code)
+            logger.debug("GET %s failed | Reason: %s", login_url, r.reason)
+        r.raise_for_status()
+        soup = BeautifulSoup(r.content)
+        x_csrf_token = soup.find(attrs={'name': 'csrf-token'}).get('content')
+        cookie = r.headers['set-cookie']
+        headers = {"Cookie": cookie}
+
+        # auth and get new cookie (csrf token is probably the same)
+        session_url = base_url + "/session"
+        github_username = raw_input("%s username:" % args.github)
+        github_password = getpass.getpass("%s:%s password:"
+                                          % (args.github, github_username))
+        data = {'authenticity_token': x_csrf_token,
+                'login': github_username,
+                'password': github_password,
+                'commit': 'Sign in'}
+        logger.debug("Authenticating %s on %s ",
+                     github_username, args.github)
+        r = requests.post(session_url, headers=headers, data=data)
+        if not r.ok:
+            logger.debug("Authenticating %s on %s | Status Code: %s",
+                         github_username, args.github, r.status_code)
+            logger.debug("Authentication failed | Reason: %s", r.reason)
+            sys.exit("Failed to authenticate user '%s' on %s"
+                     % (github_username, args.github))
+        r.raise_for_status()
+        soup = BeautifulSoup(r.content)
+        x_csrf_token = soup.find(attrs={'name': 'csrf-token'}).get('content')
+        cookie = r.headers['set-cookie']
+        keyring.set_password('figit', 'cookie', cookie)
+        keyring.set_password('figit', 'x_csrf_token', x_csrf_token)
 
     policy_url = base_url + "/upload/policies/assets"
 
