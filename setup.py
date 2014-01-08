@@ -13,7 +13,7 @@ setup(
     name='figit',
     description='Upload images to your github enterprise server.',
     keywords='figit',
-    version='1.0.1',
+    version='1.1.0',
     entry_points = {'console_scripts': ['figit=figit.figit:main']},
     packages = find_packages(exclude=['tests']),
     author='samstav',
