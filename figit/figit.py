@@ -9,6 +9,7 @@ from mimetypes import guess_type
 from subprocess import Popen, PIPE
 
 import argh
+import keyring
 import requests
 import xerox
 
@@ -38,16 +39,6 @@ def push(args):
         ch.setFormatter(formatter)
         logger.addHandler(ch)
         logger.setLevel(logging.DEBUG)
-
-
-    cookie=None
-    # Arbitrary cookie file name
-    with open(args.cookie) as cookie_file:
-        cookie = cookie_file.read().strip()
-
-    if(not cookie):
-        raise Exception("%s could not be read", args.cookie)
-
 
     isfile, filepath = good_filepath(args.path[0])
     if not isfile:
@@ -118,9 +109,20 @@ def push(args):
     if r.status_code != 201:
         logger.debug("Requesting asset slot | Status Code: %s", r.status_code)
         logger.debug("Requesting asset slot | Reason: %s", r.reason)
+        keyring.set_password('figit', 'cookie', '')
+        keyring.set_password('figit', 'x_csrf_token', '')
     r.raise_for_status()
 
-    rjson = r.json()
+    try:
+        rjson = r.json()
+    except ValueError, err:
+        typ, value, traceback = sys.exc_info()
+        keyring.set_password('figit', 'cookie', '')
+        keyring.set_password('figit', 'x_csrf_token', '')
+        raise err.__class__, \
+              ("The credentials you provided may have been invalid."), \
+              traceback
+
     logger.debug("Requeseting asset slot | Response Data: %s", rjson)
     upload_url = base_url + rjson['upload_url']
     image_url = rjson['asset']['href']
@@ -172,6 +174,8 @@ def push(args):
     if not r.ok:
         logger.debug("Uploading file | Status Code: %s", r.status_code)
         logger.debug("Uploading file | Reason: %s", r.reason)
+        keyring.set_password('figit', 'cookie', '')
+        keyring.set_password('figit', 'x_csrf_token', '')
     r.raise_for_status()
 
 
