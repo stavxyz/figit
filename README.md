@@ -21,7 +21,7 @@ $ figit ~/Desktop/ascreenshot.png
 $ pip install figit
 ```
 
-Development:
+#### Development
 
 Clone, fork, or whatever you do.
 
