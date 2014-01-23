@@ -17,13 +17,11 @@ $ figit ~/Desktop/ascreenshot.png
 
 #### Installation
 
-Quick and dirty mode:
-
 ```bash
 $ pip install figit
 ```
 
-Development:
+#### Development
 
 Clone, fork, or whatever you do.
 
@@ -31,12 +29,6 @@ Clone, fork, or whatever you do.
 $ cd figit
 $ pip install -e .
 ```
-
-#### Configuration
-
-Get the cookie named `_fi_sess` using the javascript console of your favorite modern browser.
-
-Drop it in `cookie.txt`. It should start with `_fi_sess`, have some dashy bits `--`, and end in a semi-colon.
 
 #### Usage
 ```bash
