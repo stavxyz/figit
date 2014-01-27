@@ -6,7 +6,7 @@ Upload images to your GitHub Enterprise account!
 :camera: for your :octocat:
 
 ```bash
-$ figit ~/Desktop/Screen\ Shot\ 2014-01-27\ at\ 2.25.48\ PM.png -g github.starshipenterprise.com
+$ figit ~/Desktop/ScreenShot48.png -g github.starshipenterprise.com
 github.starshipenterprise.com username:sambo
 github.starshipenterprise.com:sambo password:
 Clipboard success!
@@ -30,7 +30,7 @@ $ pip install -e .
 
 #### Usage
 ```bash
-$ figit ~/Desktop/Screen\ Shot\ 2014-01-27\ at\ 2.25.48\ PM.png -g github.starshipenterprise.com
+$ figit ~/Desktop/ScreenShot48.png -g github.starshipenterprise.com
 github.starshipenterprise.com username:sambo
 github.starshipenterprise.com:sambo password:
 Clipboard success!
