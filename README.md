@@ -29,6 +29,8 @@ $ pip install -e .
 ```
 
 #### Usage
+figit caches your token (not your username/pw) using python keyring.  
+figit will ask you again if it finds that your token has expired. 
 ```bash
 $ figit ~/Desktop/ScreenShot48.png -g github.starshipenterprise.com
 github.starshipenterprise.com username:sambo
